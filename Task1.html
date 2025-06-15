@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flashcard Quiz App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #d6ecf3; 
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    input, textarea, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .quiz-area, .score-area {
+      display: none;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+    .btn-group button {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Flashcard Quiz App</h1>
+
+    <div id="add-card-area">
+      <h3>Add Flashcard</h3>
+      <input type="text" id="question" placeholder="Enter Question">
+      <textarea id="answer" rows="3" placeholder="Enter Answer"></textarea>
+      <button onclick="addCard()">Add Card</button>
+    </div>
+
+    <div style="text-align: center;">
+      <button onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <div class="quiz-area" id="quiz-area">
+      <h3 id="quiz-question"></h3>
+      <div class="btn-group">
+        <button onclick="markAnswer(true)">I got it right</button>
+        <button onclick="markAnswer(false)">I got it wrong</button>
+      </div>
+    </div>
+
+    <div class="score-area" id="score-area">
+      <h2>Quiz Completed!</h2>
+      <p id="score-text"></p>
+      <button onclick="resetQuiz()">Restart Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const flashcards = [];
+    let current = 0;
+    let score = 0;
+
+    function addCard() {
+      const question = document.getElementById('question').value.trim();
+      const answer = document.getElementById('answer').value.trim();
+      if (question && answer) {
+        flashcards.push({ question, answer });
+        alert("Flashcard added!");
+        document.getElementById('question').value = '';
+        document.getElementById('answer').value = '';
+      } else {
+        alert("Please fill out both fields.");
+      }
+    }
+
+    function startQuiz() {
+      if (flashcards.length === 0) {
+        alert("Please add at least one flashcard first.");
+        return;
+      }
+      current = 0;
+      score = 0;
+      document.getElementById('add-card-area').style.display = 'none';
+      document.getElementById('quiz-area').style.display = 'block';
+      document.getElementById('score-area').style.display = 'none';
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const card = flashcards[current];
+      document.getElementById('quiz-question').innerHTML = `
+        <strong>Q:</strong> ${card.question}<br/><br/>
+        <em>Answer: ${card.answer}</em>
+      `;
+    }
+
+    function markAnswer(correct) {
+      if (correct) score++;
+      current++;
+      if (current < flashcards.length) {
+        showQuestion();
+      } else {
+        endQuiz();
+      }
+    }
+
+    function endQuiz() {
+      document.getElementById('quiz-area').style.display = 'none';
+      document.getElementById('score-area').style.display = 'block';
+      document.getElementById('score-text').textContent = `You scored ${score} out of ${flashcards.length}`;
+    }
+
+    function resetQuiz() {
+      document.getElementById('add-card-area').style.display = 'block';
+      document.getElementById('quiz-area').style.display = 'none';
+      document.getElementById('score-area').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
